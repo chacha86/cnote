@@ -1,0 +1,15 @@
+2024-11-08 23:36:02.918990+09:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT @[*]@character_set_database, @@sql_mode"; expected "identifier"; SQL statement:
+SELECT @@character_set_database, @@sql_mode [42001-224]
+2024-11-08 23:36:03.420114+09:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "BOOK" not found (this database is empty); SQL statement:
+alter table book drop foreign key FK5agjfcdt2unxwdjcy5ort2ee7 [42104-224]
+2024-11-08 23:36:03.429114+09:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create table book (id bigint not null auto_increment, parent_book_id bigint, name varchar(30) not null, primary key (id)) engine[*]=InnoDB"; expected "identifier"; SQL statement:
+create table book (id bigint not null auto_increment, parent_book_id bigint, name varchar(30) not null, primary key (id)) engine=InnoDB [42001-224]
+2024-11-08 23:36:03.431113+09:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "BOOK" not found; SQL statement:
+alter table book add constraint FK5agjfcdt2unxwdjcy5ort2ee7 foreign key (parent_book_id) references book (id) [42102-224]
+2024-11-08 23:36:03.997943+09:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "BOOK" not found (this database is empty); SQL statement:
+select count(*) from book b1_0 [42104-224]

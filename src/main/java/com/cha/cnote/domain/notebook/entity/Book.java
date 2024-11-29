@@ -1,5 +1,7 @@
-package com.cha.cnote.domain.notebook.controller;
+package com.cha.cnote.domain.notebook.entity;
 
+import com.cha.cnote.domain.note.entity.Note;
+import com.cha.cnote.domain.notebook.dto.BookDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,20 +28,29 @@ public class Book {
     @ManyToOne
     private Book parentBook;
 
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Note> notes = new ArrayList<>();
+
     public void addSubBook(Book book) {
         this.subBooks.add(book);
         book.setParentBook(this);
     }
 
+    public void addNote(Note note) {
+        this.notes.add(note);
+        note.setBook(this);
+    }
+
     public void setParentBook(Book parentBook) {
         this.parentBook = parentBook;
     }
-
     public BookDto toDto() {
         return BookDto.builder()
                 .id(this.id)
                 .name(this.name)
                 .subBooks(this.toSubBookDto())
+                .notes(this.notes.stream().map(Note::toDto).toList())
                 .build();
     }
 

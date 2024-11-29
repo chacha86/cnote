@@ -1,4 +1,4 @@
-package com.cha.cnote.domain.notebook.controller;
+package com.cha.cnote.global;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
