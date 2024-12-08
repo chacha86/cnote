@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import Editor, { OnMount } from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
@@ -9,121 +9,190 @@ import rehypeRaw from "rehype-raw";
 import remarkBreaks from "remark-breaks";
 import rehypeSanitize from "rehype-sanitize";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import {
+  oneDark,
+  oneLight,
+} from "react-syntax-highlighter/dist/esm/styles/prism";
+import { Note } from "@/types/Book";
+import { title } from "process";
 
-export default function DetailComponent() {
-  const [value, setValue] = useState("");
-  const [markdown, setMarkdown] = useState("");
+export default function DetailComponent({
+  mode,
+  selectedNote,
+  changeNote,
+}: {
+  mode: number;
+  selectedNote: Note;
+  changeNote: (note: Note) => void;
+}) {
+  if (!selectedNote) {
+    return <div>노트를 선택해주세요.</div>;
+  }
+  const [title, setTitle] = useState(selectedNote.title);
+  const [code, setCode] = useState(selectedNote.content);
+  const [cursor, setCursor] = useState({ lineNumber: 1, column: 1 });
 
-  const [code, setCode] = useState("// 여기에 코드를 작성하세요");
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const titleRef = useRef<HTMLInputElement>(null);
+  const cursorRef = useRef({ lineNumber: 1, column: 1 });
+  const containerRef = useRef<HTMLDivElement>(null);
+  const selectedNoteRef = useRef(selectedNote);
+  const highlighterRef = useRef<SyntaxHighlighter | null>(null);
+
+  useEffect(() => {
+    cursorRef.current = cursor;
+  }, [cursor]);
+
+  useEffect(() => {
+    editorRef.current?.setValue(selectedNote.content);
+    setCode(selectedNote.content);
+    setTitle(selectedNote.title);
+    selectedNoteRef.current = selectedNote;
+    titleRef.current?.focus();
+  }, [selectedNote]);
 
   const handleEditorChange = (value: any) => {
     setCode(value);
-    setMarkdown(value);
   };
 
   const handleEditorDidMount: OnMount = (editor, monaco) => {
-    // Ctrl+S 단축키 추가
+    console.log("editorDidMount", editor);
     editor.addCommand(
       monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, // Ctrl+S
       () => {
-        console.log("Ctrl+S was pressed!");
-        alert("Save triggered!");
+        console.log(titleRef.current?.value);
+        console.log(editorRef.current?.getValue());
+
+        fetch(
+          `http://localhost:8080/api/v1/notes/${selectedNoteRef.current.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              title: titleRef.current?.value,
+              content: editorRef.current?.getValue(),
+            }),
+          }
+        )
+          .then((res) => res.json())
+          .then((res) => {
+            changeNote(res.data);
+          });
       }
     );
 
-    // editor.addCommand(monaco.KeyCode.Enter, () => {
-    //     // 현재 커서 위치에서 줄바꿈 삽입
-    //     const position = editor.getPosition(); // 현재 커서 위치
-    //     const model = editor.getModel();
-
-    //     if (position && model) {
-    //       const range = new monaco.Range(
-    //         position.lineNumber,
-    //         position.column,
-    //         position.lineNumber,
-    //         position.column
-    //       );
-    //       const id = { major: 1, minor: 1 }; // 변경 식별자
-    //       const text = `  \n`; // Markdown에서 줄바꿈은 공백 2개 + 개행문자
-
-    //       // 줄바꿈 텍스트 삽입
-    //       editor.executeEdits(JSON.stringify(id), [{ range, text, forceMoveMarkers: true }]);
-    //     }
-    //   });
+    editor.onDidChangeCursorPosition((e) => {
+      setCursor(e.position);
+      // cursorRef.current = e.position;
+      // console.log("Cursor moved to1:", e.position);
+      // console.log("Cursor moved to2:", cursorRef.current);
+    });
+    editorRef.current = editor;
+    editorRef.current.setValue(code);
+    editorRef.current.focus();
+    editorRef.current.setPosition(cursorRef.current);
   };
-  const transformContent = (content: string) => content.replace(/\n/g, "<br/>"); // 줄바꿈 문자 처리
+
+  
   return (
     <div className="p-2 w-[70%]">
-      <div className="flex flex-col gap-4 h-[70vh] w-[60vw]">
-        <input
-          type="text"
-          className="input input-success input-bordered input-lg"
-        />
-        {/* <textarea
-          className="textarea textarea-success h-[60vh] w-[60vw] leading-normal"
-          placeholder="내용 입력"
-          value={markdown}
-          onChange={handleTextareaChange}
-        ></textarea> */}
-        <Editor
-          defaultLanguage="markdown" // 기본 언어
-          defaultValue="// 여기에 코드를 작성하세요" // 기본 코드
-          theme="vs" // 테마 설정 (vs-light, vs-dark 등)
-          value={code} // 상태와 동기화된 코드
-          onChange={handleEditorChange}
-          onMount={handleEditorDidMount}
-          options={{
-            wordWrap: "on",
-            lineNumbers: "on", // 줄 번호 표시
-            renderWhitespace: "all", // 공백과 탭 표시
-            renderControlCharacters: true, // 제어 문자 표시
-            automaticLayout: true,
-            suggestOnTriggerCharacters: false,
-            quickSuggestions: false,
-            mouseWheelZoom: true, // 자동 크기 조정 활성화
-            fontFamily: "Pretendard, monospace",
-            fontSize: 16,
-          }} // 코드 변경 핸들러
-        />
-        <div className="no-tailwind">
-          <div className="not-tailwind">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm, remarkBreaks]}
-              rehypePlugins={[rehypeRaw, rehypeSanitize]}
-              components={{
-                img: ({ node, ...props }) => {
-                  if (props.src) {
-                    return <img
+      {mode === 0 ? (
+        <div className="flex flex-col gap-4 h-[100%] w-[100%] p-3">
+          <input
+            ref={titleRef}
+            type="text"
+            className="input input-success input-lg"
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
+          />
+          <Editor
+            className="border-[1px] border-green-500 rounded-lg p-2"
+            defaultLanguage="markdown" // 기본 언어
+            theme="vs" // 테마 설정 (vs-light, vs-dark 등)
+            // value={code} // 상태와 동기화된 코드
+            onChange={handleEditorChange}
+            onMount={handleEditorDidMount}
+            options={{
+              wordWrap: "on",
+              lineNumbers: "on", // 줄 번호 표시
+              renderWhitespace: "all", // 공백과 탭 표시
+              renderControlCharacters: true, // 제어 문자 표시
+              automaticLayout: true,
+              suggestOnTriggerCharacters: false,
+              quickSuggestions: false,
+              mouseWheelZoom: true, // 자동 크기 조정 활성화
+              fontFamily: "Pretendard, monospace",
+              fontSize: 16,
+              placeholder: "여기에 내용을 입력하세요...",
+              minimap: {
+                enabled: false, // 미니맵 비활성화
+              },
+            }} // 코드 변경 핸들러
+          />
+        </div>
+      ) : (
+        <div ref={containerRef} className="not-tailwind p-3">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm, remarkBreaks]}
+            rehypePlugins={[rehypeRaw, rehypeSanitize]}
+            components={{
+              a: ({ href, children }) => {
+                return (
+                  <a href={href} target="_blank" rel="noopener noreferrer">
+                    {children}
+                  </a>
+                );
+              },
+              img: ({ node, ...props }) => {
+                if (props.src) {
+                  return (
+                    <img
                       {...props}
                       style={{ maxWidth: "800px", maxHeight: "600px" }}
-                    />;
-                  }
-                },
-                code({ node, inline, className, children, ...props }) {
-                  const match = /language-(\w+)/.exec(className || "");
-                  return !inline && match ? (
-                    <SyntaxHighlighter
-                      style={oneDark} // Prism.js 스타일
-                      language={match[1]} // 언어 감지
-                      PreTag="div"
-                      {...props}
-                    >
-                      {String(children).replace(/\n$/, "")}
-                    </SyntaxHighlighter>
-                  ) : (
-                    <code className={className} {...props}>
-                      {children}
-                    </code>
+                    />
                   );
-                },
-              }}
-            >
-              {markdown}
-            </ReactMarkdown>
-          </div>
+                }
+              },
+              code(props) {
+                const { children, className, node, ...rest } = props;
+                const match = /language-(\w+)/.exec(className || "");
+                return match ? (
+                  <SyntaxHighlighter
+                    {...rest}
+                    PreTag="div"
+                    children={String(children).replace(/\n$/, "")}
+                    language={match[1]}
+                    style={oneLight}
+                    ref={highlighterRef}
+                  />
+                ) : (
+                  <code
+                    {...rest}
+                    style={{
+                      background: "#FBEFEF",
+                      opacity: "0.7",
+                      display: "inline-block",
+                      padding: "0 5px",
+                      fontSize: "1rem",
+                      fontFamily: "Pretendard",
+                      color: "#FA5858",
+                      letterSpacing: "1px",
+                    }}
+                  >
+                    {children}
+                  </code>
+                );
+              },
+            }}
+          >
+            {code}
+          </ReactMarkdown>
         </div>
-      </div>
+      )}
     </div>
   );
 }

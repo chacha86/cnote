@@ -3,10 +3,11 @@ export interface Book {
     name: string;
     children?: Book[];
     notes: Note[];
-}
-
+  }
+  
 export interface Note {
     id: number;
     title: string;
+    content: string;
     book: Book;
-}
+  }
