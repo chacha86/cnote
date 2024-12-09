@@ -57,14 +57,15 @@ export default function NoteComponent({
           return (
             <li
               key={note.id}
-              className={`p-2 mb-1 border rounded shadow overflow-hidden hover:bg-gray-200 hover:cursor-pointer ${
+              className={`p-2 mb-1 border rounded shadow hover:bg-gray-200 hover:cursor-pointer ${
                 isSelected ? "bg-gray-300" : ""
               }`}
               onClick={() => {
                 changeNote(note);
               }}
             >
-              <p>{note.title}</p>
+              {/* <p>{note.title.length > 20 ? note.title.slice(0, 17) + '...' : note.title}</p> */}
+              <p className="truncate">{note.title}</p>
             </li>
           );
         })}

@@ -1,18 +1,7 @@
-import NoteMain from "../components/main/NoteMain";
-
-export default async function Home() {
-  
-  const res = await fetch("http://localhost:8080/api/v1/books");
-  if(!res.ok) {
-    return <div>오류 발생</div>;
-  }
-  const result = await res.json();
-  const initBooks = result.data;
-  console.log(initBooks);
-
+export default function Home() {
   return (
-    <>
-     <NoteMain initBooks={initBooks} initNotes={initBooks[0].notes}/>
-    </>
+    <div className="h-[90vh] flex justify-center items-center">
+      <div className="text-[4rem] text-bold text-green-700">Welcome to CNote!</div>
+    </div>
   );
 }

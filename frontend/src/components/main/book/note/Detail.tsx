@@ -14,7 +14,6 @@ import {
   oneLight,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Note } from "@/types/Book";
-import { title } from "process";
 
 export default function DetailComponent({
   mode,
@@ -31,6 +30,7 @@ export default function DetailComponent({
   const [title, setTitle] = useState(selectedNote.title);
   const [code, setCode] = useState(selectedNote.content);
   const [cursor, setCursor] = useState({ lineNumber: 1, column: 1 });
+  const [isPublished, setIsPublished] = useState(selectedNote.published);
 
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const titleRef = useRef<HTMLInputElement>(null);
@@ -49,6 +49,7 @@ export default function DetailComponent({
     setTitle(selectedNote.title);
     selectedNoteRef.current = selectedNote;
     titleRef.current?.focus();
+    setIsPublished(selectedNote.published);
   }, [selectedNote]);
 
   const handleEditorChange = (value: any) => {
@@ -63,8 +64,7 @@ export default function DetailComponent({
         console.log(titleRef.current?.value);
         console.log(editorRef.current?.getValue());
 
-        fetch(
-          `http://localhost:8080/api/v1/notes/${selectedNoteRef.current.id}`,
+        fetch(`http://localhost:8080/api/v1/notes/${selectedNoteRef.current.id}`,
           {
             method: "PUT",
             headers: {
@@ -95,7 +95,22 @@ export default function DetailComponent({
     editorRef.current.setPosition(cursorRef.current);
   };
 
-  
+  const publishNote = (published: boolean) => {
+    fetch(`http://localhost:8080/api/v1/notes/${selectedNote.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        published: published,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        changeNote(res.data);
+      });
+  };
+
   return (
     <div className="p-2 w-[70%]">
       {mode === 0 ? (
@@ -106,6 +121,9 @@ export default function DetailComponent({
             className="input input-success input-lg"
             value={title}
             onChange={(e) => {
+              if(e.target.value.length > 200) {
+                return;
+              }
               setTitle(e.target.value);
             }}
           />
@@ -135,7 +153,7 @@ export default function DetailComponent({
           />
         </div>
       ) : (
-        <div ref={containerRef} className="not-tailwind p-3">
+        <div ref={containerRef} className="not-tailwind h-[100%] p-3 overflow-auto">
           <ReactMarkdown
             remarkPlugins={[remarkGfm, remarkBreaks]}
             rehypePlugins={[rehypeRaw, rehypeSanitize]}
@@ -193,6 +211,32 @@ export default function DetailComponent({
           </ReactMarkdown>
         </div>
       )}
+      <div className="absolute bottom-1 right-1">
+        {isPublished ? (
+          <>
+            <div className="bg-gray-200 p-2 rounded-md font-bold text-[0.9rem] text-gray-500  bg-opacity-50">
+              게시된 노트
+            </div>
+            <button
+              className="btn btn-error p-4 cursor-pointer bg-opacity-70"
+              onClick={() => {
+                publishNote(false);
+              }}
+            >
+              게시 취소
+            </button>
+          </>
+        ) : (
+          <button
+            className="btn btn-info p-4 cursor-pointer bg-opacity-70"
+            onClick={() => {
+              publishNote(true);
+            }}
+          >
+            게시
+          </button>
+        )}
+      </div>
     </div>
   );
 }
