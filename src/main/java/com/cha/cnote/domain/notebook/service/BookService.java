@@ -1,5 +1,6 @@
 package com.cha.cnote.domain.notebook.service;
 
+import com.cha.cnote.domain.note.service.NoteService;
 import com.cha.cnote.domain.notebook.dto.BookDto;
 import com.cha.cnote.domain.notebook.entity.Book;
 import com.cha.cnote.domain.notebook.repository.BookRepository;
@@ -13,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookService {
     private final BookRepository bookRepository;
+    private final NoteService noteService;
 
     public List<BookDto> getGroupList() {
         List<Book> bookList = bookRepository.findByParentBookIsNull();
@@ -26,10 +28,10 @@ public class BookService {
         return bookDtoList;
     }
 
-    public Book write() {
+    public Book writeDefault() {
 
         Book book = Book.builder()
-                .name("book1")
+                .name("no name..")
                 .build();
 
         return bookRepository.save(book);

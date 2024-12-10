@@ -14,7 +14,7 @@ export default function BookComponent({
 }) {
 
   return (
-    <div className="min-w-min w-[15%] border-r-2 h-full">
+    <div className="min-w-min w-[15%] border-r-2 h-full overflow-auto">
       <div className="my-1 ml-1">
         <button className="px-3 rounded hover:bg-gray-300 bg-gray-200 border border-gray-400"
                 onClick={createDefaultBook}>노트북 추가</button>

@@ -11,31 +11,7 @@ export default function MainComponent({ initBooks, initNotes }: { initBooks: Boo
   const [notes, setNotes] = useState<Note[]>(initNotes);
   const [selectedBook, setSelectedBook] = useState<Book>(books[0]);
   const [selectedNote, setSelectedNote] = useState<Note>(books[0].notes[0]);
-  const [mode, setMode] = useState(0); // 0: editor, 1: viewer
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.altKey && event.key === "q") {
-        event.preventDefault();
-        console.log("Alt+Q was pressed!");
-
-        setMode((prevMode) => (prevMode === 0 ? 1 : 0));
-      }
-
-      if (event.key === "Escape") {
-        event.preventDefault();
-      }
-    };
-
-    // 전역 키 이벤트 등록
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      // 컴포넌트 언마운트 시 이벤트 제거
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
-
+  
   const createDefaultBook = () => {
     fetch("http://localhost:8080/api/v1/books", {
       method: "POST",
@@ -66,7 +42,6 @@ export default function MainComponent({ initBooks, initNotes }: { initBooks: Boo
   };
 
   const changeNote = (note: Note) => {
-    console.log(note);
     setSelectedNote({ ...note });
   };
 
@@ -88,7 +63,7 @@ export default function MainComponent({ initBooks, initNotes }: { initBooks: Boo
         selectedNote={selectedNote}
         changeNote={changeNote}
       />
-      <Detail mode={mode} selectedNote={selectedNote} changeNote={changeNote}/>
+      <Detail selectedNote={selectedNote} changeNote={changeNote}/>
     </div>
   );
 }

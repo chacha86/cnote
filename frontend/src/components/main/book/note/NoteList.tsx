@@ -14,9 +14,7 @@ export default function NoteComponent({
   selectedNote: Note;
   changeNote: (note: Note) => void;
 }) {
-  console.log("NoteComponent");
   const [notes, setNotes] = useState<Note[]>(initNotes);
-  const [localSelectedNote, setLocalSelectedNote] = useState<Note>(selectedNote);
 
   useEffect(() => {
     setNotes(initNotes);
@@ -43,7 +41,7 @@ export default function NoteComponent({
   };
 
   return (
-    <div className="min-w-[100px] border-r-2 w-[15%]">
+    <div className="min-w-[100px] border-r-2 w-[15%] overflow-auto">
       <div className="my-1 ml-1">
         <button className="px-3 rounded hover:bg-gray-300 bg-gray-200 border border-gray-400"
                 onClick={createDefaultNote}>노트 추가</button>

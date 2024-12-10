@@ -7,22 +7,43 @@ import com.cha.cnote.global.ResData;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/notes")
 public class NoteApiV1Controller {
 
     private final NoteService noteService;
 
-    public record UpdateReqDto(String title, String content){}
+    public record UpdateReqDto(String title, String content, boolean published){}
     @PutMapping("/{id}")
     public ResData<NoteDto> update(@PathVariable long id, @RequestBody UpdateReqDto updateReqDto) {
 
         Note note = noteService.update(id, updateReqDto.title, updateReqDto.content);
         return new ResData<>("노트 수정 성공", "200003", note.toDto());
+    }
+
+    @PatchMapping("/{id}")
+    public ResData<NoteDto> publish(@PathVariable long id, @RequestBody UpdateReqDto updateReqDto) {
+
+        Note note = noteService.publish(id, updateReqDto.published());
+        return new ResData<>("노트를 게시 했습니다.", "200004", note.toDto());
+    }
+
+    @GetMapping("")
+    public ResData<List<NoteDto>> getItems() {
+        List<Note> noteList = noteService.getPublishedList();
+        List<NoteDto> noteDtoList = noteList.stream().map(Note::toDto).toList();
+
+        return new ResData<>("노트 목록 가져오기 성공", "200000", noteDtoList);
+    }
+
+    @GetMapping("/{id}")
+    public ResData<NoteDto> getItems(@PathVariable long id) {
+        Note note = noteService.getOne(id);
+        return new ResData<>("노트 가져오기 성공", "200000", note.toDto());
     }
 }
