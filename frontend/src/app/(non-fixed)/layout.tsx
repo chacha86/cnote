@@ -7,8 +7,8 @@ export default function NonFixedLayout({
 }) {
   return (
     <div className="dashboard-layout">
-      <NavBar css='fixed z-50'/>
-      {children}
+      <NavBar css="fixed z-50" />
+      <div className="h-[95vh] w-[100%] absolute top-[10vh]">{children}</div>
     </div>
   );
 }

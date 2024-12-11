@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Link from "next/link";
 import NavBar from "@/components/NavBar";
+import { ThemeContext } from "./context";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,11 +33,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={`${pretandard.variable}`}>
-      <body className={`${pretandard.variable}`}>
-
-        {children}
-      </body>
-    </html>
+      <html lang="ko" className={`${pretandard.variable}`}>
+        <body className={`${pretandard.variable}`}>{children}</body>
+      </html>
   );
 }

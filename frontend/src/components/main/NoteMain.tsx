@@ -1,12 +1,18 @@
 "use client";
-import { useEffect, useState } from "react";
+import { use, useContext, useEffect, useState } from "react";
 import Detail from "./book/note/Detail";
 import { Book, Note } from "@/types/Book";
 import BookList from "./book/BookList";
 import NoteList from "./book/note/NoteList";
+import { TestContext } from "@/app/context/testContext";
 
 
 export default function MainComponent({ initBooks, initNotes }: { initBooks: Book[], initNotes: Note[] }) {
+
+  const test = useContext(TestContext);
+
+  console.log('test ', test);
+
   const [books, setBooks] = useState<Book[]>(initBooks);
   const [notes, setNotes] = useState<Note[]>(initNotes);
   const [selectedBook, setSelectedBook] = useState<Book>(books[0]);

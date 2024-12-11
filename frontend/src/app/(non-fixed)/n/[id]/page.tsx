@@ -1,5 +1,6 @@
 import MarkDownViewer from "@/components/main/book/note/MarkDownViewer";
 import { Suspense } from "react";
+import DetailClientComponent from "./ClientComponent";
 
 export default async function NoteDetail({
   params,
@@ -20,7 +21,7 @@ export default async function NoteDetail({
       <div className="w-[800px]">
         <Suspense fallback={<div>로딩중...</div>}>
           <h1 className="font-bold text-[2rem] border-b-2 border-gray-500 py-2">{title}</h1>
-          <MarkDownViewer content={content} />
+          <DetailClientComponent content={content} />
         </Suspense>
       </div>
     </div>
