@@ -23,14 +23,14 @@ public class NoteApiV1Controller {
     public ResData<NoteDto> update(@PathVariable long id, @RequestBody UpdateReqDto updateReqDto) {
 
         Note note = noteService.update(id, updateReqDto.title, updateReqDto.content);
-        return new ResData<>("노트 수정 성공", "200003", note.toDto());
+        return new ResData<>("노트 수정 성공", "200002", note.toDto());
     }
 
     @PatchMapping("/{id}")
     public ResData<NoteDto> publish(@PathVariable long id, @RequestBody UpdateReqDto updateReqDto) {
 
         Note note = noteService.publish(id, updateReqDto.published());
-        return new ResData<>("노트를 게시 했습니다.", "200004", note.toDto());
+        return new ResData<>("노트를 게시 했습니다.", "200003", note.toDto());
     }
 
     @GetMapping("")

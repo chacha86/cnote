@@ -1,5 +1,7 @@
 package com.cha.cnote.global;
 
+import com.cha.cnote.domain.member.entity.Member;
+import com.cha.cnote.domain.member.repository.MemberRepository;
 import com.cha.cnote.domain.note.entity.Note;
 import com.cha.cnote.domain.notebook.entity.Book;
 import com.cha.cnote.domain.notebook.repository.BookRepository;
@@ -15,9 +17,13 @@ import java.util.List;
 public class TestDataInitializer implements ApplicationRunner {
 
     private final BookRepository bookRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public void makeTestData() {
+
+        makeTestMember();
+
         Book book1 = Book.builder()
                 .name("book1")
                 .build();
@@ -81,6 +87,23 @@ public class TestDataInitializer implements ApplicationRunner {
         book3.addNote(note6);
 
         bookRepository.saveAll(List.of(book1, book2, book3));
+
+    }
+
+    public void makeTestMember() {
+        Member m1 = Member.builder()
+                .loginId("user1")
+                .password("1234")
+                .nickname("user1")
+                .build();
+
+        Member m2 = Member.builder()
+                .loginId("user2")
+                .password("1234")
+                .nickname("user2")
+                .build();
+
+        memberRepository.saveAll(List.of(m1, m2));
     }
 
     @Override

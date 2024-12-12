@@ -11,8 +11,6 @@ export default function MainComponent({ initBooks, initNotes }: { initBooks: Boo
 
   const test = useContext(TestContext);
 
-  console.log('test ', test);
-
   const [books, setBooks] = useState<Book[]>(initBooks);
   const [notes, setNotes] = useState<Note[]>(initNotes);
   const [selectedBook, setSelectedBook] = useState<Book>(books[0]);

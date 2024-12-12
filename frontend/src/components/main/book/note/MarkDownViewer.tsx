@@ -1,5 +1,5 @@
 'use client';
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -10,11 +10,11 @@ import {
   oneDark,
   oneLight,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { TestContext } from "@/app/context/testContext";
 
 export default function MarkDownViewer({content}: {content: string}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const highlighterRef = useRef<SyntaxHighlighter | null>(null);
-
   return (
     <div ref={containerRef} className="not-tailwind h-[100%] p-3 overflow-auto">
       <ReactMarkdown

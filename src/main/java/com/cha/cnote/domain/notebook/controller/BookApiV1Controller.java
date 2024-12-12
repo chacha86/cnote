@@ -35,7 +35,7 @@ public class BookApiV1Controller {
     }
     @PostMapping("")
     public ResData<BookDto> writeDefaultBook() {
-        return new ResData<>("기본 노트북 생성 성공", "200002", bookService.writeDefault().toDto());
+        return new ResData<>("기본 노트북 생성 성공", "200001", bookService.writeDefault().toDto());
     }
 
     @GetMapping("/{bookId}/notes")
@@ -48,7 +48,7 @@ public class BookApiV1Controller {
 
     @PostMapping("/{bookId}/notes")
     public ResData<NoteDto> writeDefaultNote(@PathVariable long bookId) {
-        return new ResData<>("기본 노트 생성 성공", "200002", mainService.saveDefaultNote(bookId).toDto());
+        return new ResData<>("기본 노트 생성 성공", "200001", mainService.saveDefaultNote(bookId).toDto());
     }
 }
 
