@@ -1,5 +1,6 @@
 import { Note } from "@/types/Book";
 import ListClientComponent from "./ClientComponent";
+import { Suspense } from "react";
 
 export default async function List() {
   const res = await fetch("http://localhost:8080/api/v1/notes");

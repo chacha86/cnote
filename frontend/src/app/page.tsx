@@ -6,6 +6,7 @@ export default function Home() {
       <div className="text-[4rem] ">Welcome to CNote!</div>
       <div><Link href="/note" className="text-[2rem]">노트 편집기</Link></div>
       <div><Link href="/list" className="text-[2rem]">노트 목록</Link></div>
+      <div><Link href="/login" className="text-[2rem]">로그인</Link></div>
     </div>
   );
 }
