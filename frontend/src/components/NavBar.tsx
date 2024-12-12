@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function MainComponent({css} : {css:string}) {
+export default function NavBar({css} : {css:string}) {
   return (
     <div className={`navbar h-[5vh] bg-green-400 ${css}`}>
       <div className="navbar-start">

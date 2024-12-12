@@ -1,5 +1,7 @@
 package com.cha.cnote.global;
 
+import com.cha.cnote.domain.auth.refreshToken.entity.RefreshToken;
+import com.cha.cnote.domain.auth.refreshToken.repository.RefreshTokenRepository;
 import com.cha.cnote.domain.member.entity.Member;
 import com.cha.cnote.domain.member.repository.MemberRepository;
 import com.cha.cnote.domain.note.entity.Note;
@@ -12,12 +14,14 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
+
 @Configuration
 @RequiredArgsConstructor
 public class TestDataInitializer implements ApplicationRunner {
 
     private final BookRepository bookRepository;
     private final MemberRepository memberRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
     public void makeTestData() {
@@ -104,12 +108,25 @@ public class TestDataInitializer implements ApplicationRunner {
                 .build();
 
         memberRepository.saveAll(List.of(m1, m2));
+
+        RefreshToken rt1 = RefreshToken.builder()
+                .refreshToken("token1")
+                .member(m1)
+                .build();
+
+
+        RefreshToken rt2 = RefreshToken.builder()
+                .refreshToken("token2")
+                .member(m2)
+                .build();
+
+        refreshTokenRepository.saveAll(List.of(rt1, rt2));
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
         System.out.println("test data init");
-        if(bookRepository.count() > 0) return;
+        if (bookRepository.count() > 0) return;
         System.out.println("test data create start");
         makeTestData();
         System.out.println("test data create end");
