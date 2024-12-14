@@ -1,5 +1,5 @@
+"use client";
 import NavBar from "@/components/NavBar";
-
 export default function NonFixedLayout({
   children,
 }: {
@@ -7,8 +7,8 @@ export default function NonFixedLayout({
 }) {
   return (
     <div className="dashboard-layout">
-      <NavBar css=''/>
-      {children}
+        <NavBar css="" />
+        {children}
     </div>
   );
 }

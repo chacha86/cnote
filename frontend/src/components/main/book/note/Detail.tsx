@@ -49,9 +49,9 @@ export default function DetailComponent({
 
       if (event.ctrlKey && event.key === "s") {
         event.preventDefault();
-        
+
         if (mode === 1) return;
-        
+
         if (!isChangedRef.current) return;
 
         saveContent(contentRef.current);
@@ -77,6 +77,7 @@ export default function DetailComponent({
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({
         title: titleRef.current?.value,
         content: content,
@@ -93,6 +94,7 @@ export default function DetailComponent({
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({
         published: published,
       }),
@@ -103,9 +105,8 @@ export default function DetailComponent({
       });
   };
 
-  
   const changeContent = (content: string) => {
-    if(contentRef.current == content) {
+    if (contentRef.current == content) {
       return;
     }
     isChangedRef.current = true;
@@ -126,7 +127,7 @@ export default function DetailComponent({
             className="input input-success input-lg"
             value={title}
             onChange={(e) => {
-              console.log('sssssssssssssss');
+              console.log("sssssssssssssss");
               if (e.target.value.length > 200) {
                 return;
               }

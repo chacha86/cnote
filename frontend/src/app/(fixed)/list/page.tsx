@@ -1,12 +1,15 @@
 import { Note } from "@/types/Book";
 import ListClientComponent from "./ClientComponent";
 import { Suspense } from "react";
+import { serverFetchWrapper } from "@/components/api/ServerFetchWrapper";
 
 export default async function List() {
-  const res = await fetch("http://localhost:8080/api/v1/notes");
-  if (!res.ok) {
+  const res = await serverFetchWrapper("http://localhost:8080/api/v1/notes");
+  
+  if(res === null || !res.ok) {
     return <div>오류 발생</div>;
   }
+
   const result = await res.json();
   const publishedNotes = result.data;
 

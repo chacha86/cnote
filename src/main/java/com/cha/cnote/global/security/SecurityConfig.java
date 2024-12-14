@@ -12,6 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
 @EnableWebSecurity
@@ -32,6 +33,20 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((sessionManagement) -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .cors(
+                        cors ->
+                                cors.configurationSource(
+                                        request -> {
+                                            var corsConfig = new CorsConfiguration();
+                                            corsConfig.setAllowCredentials(true);
+                                            corsConfig.addAllowedOrigin("http://localhost:3000");
+                                            corsConfig.addAllowedHeader("*");
+                                            corsConfig.addAllowedMethod("*");
+
+                                            return corsConfig;
+                                        }
+                                )
+                );
         ;
         return http.build();
     }

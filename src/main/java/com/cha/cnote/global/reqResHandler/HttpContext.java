@@ -47,4 +47,12 @@ public class HttpContext {
 
         response.addCookie(cookie);
     }
+
+    public void removeCookie(String accessToken) {
+        Cookie cookie = new Cookie(accessToken, null);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+    }
 }

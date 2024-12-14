@@ -1,37 +1,18 @@
 import NoteMain from "@/components/main/NoteMain";
 import { Suspense, useContext } from "react";
-import { cookies } from 'next/headers';
+import { serverFetchWrapper } from "@/components/api/ServerFetchWrapper";
 
 export default async function Note() {
   
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get('accessToken');
-  const refreshToken = cookieStore.get('refreshToken');
+  const res = await serverFetchWrapper("http://localhost:8080/api/v1/books");
   
-  if(accessToken===null || accessToken === undefined) {
-    return <>
-      <div>로그인이 필요합니다</div>
-    </>;
+  if(res === null || !res.ok) {
+    return <div>로그인이 필요합니다</div>;
   }
-
-  if(refreshToken===null || refreshToken === undefined) {
-    return <>
-      <div>로그인이 필요합니다</div>
-    </>;
-  }
-
-  const res = await fetch("http://localhost:8080/api/v1/books",{
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${accessToken.value}`,
-      "Cookie": `refreshToken=${refreshToken.value}`
-    },
-  });
-  if (!res.ok) {
-    return <div>오류 발생</div>;
-  }
+  console.log(res);
+  
   const result = await res.json();
+  console.log(result);
   const initBooks = result.data;
   return (
     <>

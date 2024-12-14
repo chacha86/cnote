@@ -2,6 +2,7 @@ package com.cha.cnote.domain.member.auth.controller;
 
 import com.cha.cnote.HomeController;
 import com.cha.cnote.domain.member.ochestration.MemberAuthOrchestrator;
+import com.cha.cnote.global.ResData;
 import com.cha.cnote.global.reqResHandler.HttpContext;
 import com.cha.cnote.global.security.constant.SecurityConstants;
 import com.cha.cnote.global.security.filter.JwtAuthFilter;
@@ -31,7 +32,7 @@ public class AuthApiV1Controller {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest loginRequest) {
+    public ResData<String> login(@RequestBody LoginRequest loginRequest) {
 
         String accessToken = memberAuthOrchestrator.getAccessToken(loginRequest.email);
         String refreshToken = memberAuthOrchestrator.getRefreshTokenByUser(loginRequest.email);
@@ -40,6 +41,14 @@ public class AuthApiV1Controller {
         httpContext.setCookie(SecurityConstants.ACCESS_TOKEN, accessToken);
         httpContext.setCookie(SecurityConstants.REFRESH_TOKEN, refreshToken);
 
-        return "Hello, Spring Boot!" + loginRequest;
+        return new ResData<>("2000001", "로그인 성공", loginRequest.email);
+    }
+
+    @PostMapping("/logout")
+    public String logout(HttpServletResponse res) {
+        httpContext.removeCookie(SecurityConstants.ACCESS_TOKEN);
+        httpContext.removeCookie(SecurityConstants.REFRESH_TOKEN);
+
+        return "{\"result\" : \"success\"}";
     }
 }

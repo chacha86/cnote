@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import ClientLayout from "./clientLayout";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,8 +31,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <html lang="ko" className={`${pretandard.variable}`}>
-        <body className={`${pretandard.variable}`}>{children}</body>
-      </html>
+    <html lang="ko" className={`${pretandard.variable}`}>
+      <body className={`${pretandard.variable}`}>
+        <ClientLayout>{children}</ClientLayout>
+      </body>
+    </html>
   );
 }

@@ -10,7 +10,6 @@ import {
   oneDark,
   oneLight,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { TestContext } from "@/app/context/testContext";
 
 export default function MarkDownViewer({content}: {content: string}) {
   const containerRef = useRef<HTMLDivElement>(null);

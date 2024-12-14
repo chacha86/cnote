@@ -4,22 +4,26 @@ import Detail from "./book/note/Detail";
 import { Book, Note } from "@/types/Book";
 import BookList from "./book/BookList";
 import NoteList from "./book/note/NoteList";
-import { TestContext } from "@/app/context/testContext";
 
-
-export default function MainComponent({ initBooks, initNotes }: { initBooks: Book[], initNotes: Note[] }) {
-
+export default function MainComponent({
+  initBooks,
+  initNotes,
+}: {
+  initBooks: Book[];
+  initNotes: Note[];
+}) {
   const [books, setBooks] = useState<Book[]>(initBooks);
   const [notes, setNotes] = useState<Note[]>(initNotes);
   const [selectedBook, setSelectedBook] = useState<Book>(books[0]);
   const [selectedNote, setSelectedNote] = useState<Note>(books[0].notes[0]);
-  
+
   const createDefaultBook = () => {
     fetch("http://localhost:8080/api/v1/books", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     })
       .then((res) => res.json())
       .then((res) => {
@@ -29,12 +33,14 @@ export default function MainComponent({ initBooks, initNotes }: { initBooks: Boo
   };
 
   const changeNotes = (bookId: number) => {
-    fetch(`http://localhost:8080/api/v1/books/${bookId}/notes`)
+    fetch(`http://localhost:8080/api/v1/books/${bookId}/notes`, {
+      credentials: "include",
+    })
       .then((res) => res.json())
       .then((res) => {
         setNotes(res.data);
       });
-  }
+  };
 
   const changeBook = (book: Book) => {
     setSelectedBook(book);
@@ -65,7 +71,7 @@ export default function MainComponent({ initBooks, initNotes }: { initBooks: Boo
         selectedNote={selectedNote}
         changeNote={changeNote}
       />
-      <Detail selectedNote={selectedNote} changeNote={changeNote}/>
+      <Detail selectedNote={selectedNote} changeNote={changeNote} />
     </div>
   );
 }

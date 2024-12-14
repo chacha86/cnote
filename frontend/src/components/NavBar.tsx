@@ -1,6 +1,28 @@
+"use client";
+import { useTestContext } from "@/app/context/memberContext";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { memo } from "react";
 
-export default function NavBar({css} : {css:string}) {
+function NavBar({ css }: { css: string }) {
+  const router = useRouter();
+  const { username, setUsername } = useTestContext();
+
+  const logout = () => {
+    fetch("http://localhost:8080/api/v1/auth/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({}),
+    }).then((res) => {
+      if (res.ok) {
+        router.push("/login");
+      }
+    });
+  };
+
   return (
     <div className={`navbar h-[5vh] bg-green-400 ${css}`}>
       <div className="navbar-start">
@@ -78,7 +100,40 @@ export default function NavBar({css} : {css:string}) {
             <span className="badge badge-xs badge-primary indicator-item"></span>
           </div>
         </button>
+        <div className="dropdown dropdown-end">
+          <div
+            tabIndex={0}
+            role="button"
+            className="btn btn-ghost btn-circle avatar"
+          >
+            <div className="w-10 rounded-full">
+              <img
+                alt="Tailwind CSS Navbar component"
+                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+              />
+            </div>
+          </div>
+          <ul
+            tabIndex={0}
+            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+          >
+            <li>
+              <a className="justify-between">
+                {username}
+                <span className="badge">New</span>
+              </a>
+            </li>
+            <li>
+              <a>Settings</a>
+            </li>
+            <li>
+              <a onClick={logout}>Logout</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   );
 }
+
+export default memo(NavBar);
