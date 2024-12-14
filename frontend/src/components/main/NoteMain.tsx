@@ -9,8 +9,6 @@ import { TestContext } from "@/app/context/testContext";
 
 export default function MainComponent({ initBooks, initNotes }: { initBooks: Book[], initNotes: Note[] }) {
 
-  const test = useContext(TestContext);
-
   const [books, setBooks] = useState<Book[]>(initBooks);
   const [notes, setNotes] = useState<Note[]>(initNotes);
   const [selectedBook, setSelectedBook] = useState<Book>(books[0]);

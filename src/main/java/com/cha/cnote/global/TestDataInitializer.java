@@ -1,27 +1,28 @@
 package com.cha.cnote.global;
 
-import com.cha.cnote.domain.auth.refreshToken.entity.RefreshToken;
-import com.cha.cnote.domain.auth.refreshToken.repository.RefreshTokenRepository;
-import com.cha.cnote.domain.member.entity.Member;
-import com.cha.cnote.domain.member.repository.MemberRepository;
-import com.cha.cnote.domain.note.entity.Note;
-import com.cha.cnote.domain.notebook.entity.Book;
-import com.cha.cnote.domain.notebook.repository.BookRepository;
+import com.cha.cnote.domain.member.member.entity.Member;
+import com.cha.cnote.domain.member.member.repository.MemberRepository;
+import com.cha.cnote.domain.main.note.entity.Note;
+import com.cha.cnote.domain.main.notebook.entity.Book;
+import com.cha.cnote.domain.main.notebook.repository.BookRepository;
+import com.cha.cnote.domain.member.member.service.MemberService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
+@Profile("!test")
 public class TestDataInitializer implements ApplicationRunner {
 
     private final BookRepository bookRepository;
+    private final MemberService memberService;
     private final MemberRepository memberRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
     public void makeTestData() {
@@ -96,31 +97,19 @@ public class TestDataInitializer implements ApplicationRunner {
 
     public void makeTestMember() {
         Member m1 = Member.builder()
-                .loginId("user1")
+                .email("user1@cnote.com")
                 .password("1234")
                 .nickname("user1")
                 .build();
 
         Member m2 = Member.builder()
-                .loginId("user2")
+                .email("user2@cnote.com")
                 .password("1234")
                 .nickname("user2")
                 .build();
 
-        memberRepository.saveAll(List.of(m1, m2));
-
-        RefreshToken rt1 = RefreshToken.builder()
-                .refreshToken("token1")
-                .member(m1)
-                .build();
-
-
-        RefreshToken rt2 = RefreshToken.builder()
-                .refreshToken("token2")
-                .member(m2)
-                .build();
-
-        refreshTokenRepository.saveAll(List.of(rt1, rt2));
+        memberService.join("user1@cnote.com", "1234", "user1");
+        memberService.join("user2@cnote.com", "1234", "user2");
     }
 
     @Override
