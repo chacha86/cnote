@@ -1,4 +1,4 @@
-package com.cha.cnote.global.reqResHandler;
+package com.cha.cnote.global.httpContext;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

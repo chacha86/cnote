@@ -2,7 +2,7 @@
 import { useTestContext } from "@/app/context/memberContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { memo } from "react";
+import { memo, use } from "react";
 
 function NavBar({ css }: { css: string }) {
   const router = useRouter();
@@ -18,6 +18,7 @@ function NavBar({ css }: { css: string }) {
       body: JSON.stringify({}),
     }).then((res) => {
       if (res.ok) {
+        setUsername("anonymous");
         router.push("/login");
       }
     });
@@ -100,37 +101,38 @@ function NavBar({ css }: { css: string }) {
             <span className="badge badge-xs badge-primary indicator-item"></span>
           </div>
         </button>
-        <div className="dropdown dropdown-end">
-          <div
-            tabIndex={0}
-            role="button"
-            className="btn btn-ghost btn-circle avatar"
-          >
-            <div className="w-10 rounded-full">
-              <img
-                alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-              />
+        { username === "anonymous" 
+          ? (<Link href="/login" className="btn btn-ghost btn-circle">Login</Link>)
+          : (<div className="dropdown dropdown-end">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle avatar"
+            >
+              <div className="w-10 rounded-full">
+                <img
+                  alt="Tailwind CSS Navbar component"
+                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                />
+              </div>
             </div>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+            >
+              <li>
+                <a className="justify-between">
+                  {username}
+                  <span className="badge">New</span>
+                </a>
+              </li>
+              <li>
+                <a onClick={logout}>Logout</a>
+              </li>
+            </ul>
           </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
-          >
-            <li>
-              <a className="justify-between">
-                {username}
-                <span className="badge">New</span>
-              </a>
-            </li>
-            <li>
-              <a>Settings</a>
-            </li>
-            <li>
-              <a onClick={logout}>Logout</a>
-            </li>
-          </ul>
-        </div>
+          )
+        }
       </div>
     </div>
   );

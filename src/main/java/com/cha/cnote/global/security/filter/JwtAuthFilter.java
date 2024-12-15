@@ -1,8 +1,8 @@
 package com.cha.cnote.global.security.filter;
 
 import com.cha.cnote.domain.member.ochestration.MemberAuthOrchestrator;
-import com.cha.cnote.global.reqResHandler.HttpContext;
-import com.cha.cnote.global.security.constant.SecurityConstants;
+import com.cha.cnote.global.httpContext.HttpContext;
+import com.cha.cnote.domain.member.auth.constant.AuthConstants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,22 +33,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
         if(isAuthorizationHeader()) {
-            String accessToken = httpContext.getHeader(SecurityConstants.AUTHORIZATION_HEADER);
-            accessToken = accessToken.substring(SecurityConstants.BEARER_PREFIX.length());
+            String accessToken = httpContext.getHeader(AuthConstants.AUTHORIZATION_HEADER);
+            accessToken = accessToken.substring(AuthConstants.BEARER_PREFIX.length());
             accessToken = validateAccessToken(accessToken);
-//            String refreshToken = memberAuthOrchestrator.getRefreshTokenByAccessToken(accessToken);
-            String refreshToken = httpContext.getValueFromCookie(SecurityConstants.REFRESH_TOKEN);
+            String refreshToken = httpContext.getValueFromCookie(AuthConstants.REFRESH_TOKEN);
 
-            httpContext.setHeader(SecurityConstants.AUTHORIZATION_HEADER, SecurityConstants.BEARER_PREFIX + accessToken);
-            httpContext.setCookie(SecurityConstants.REFRESH_TOKEN, refreshToken);
+            httpContext.setHeader(AuthConstants.AUTHORIZATION_HEADER, AuthConstants.BEARER_PREFIX + accessToken);
+            httpContext.setCookie(AuthConstants.REFRESH_TOKEN, refreshToken);
         }
         else {
-            String accessToken = httpContext.getValueFromCookie(SecurityConstants.ACCESS_TOKEN);
+            String accessToken = httpContext.getValueFromCookie(AuthConstants.ACCESS_TOKEN);
             accessToken = validateAccessToken(accessToken);
-            String refreshToken = httpContext.getValueFromCookie(SecurityConstants.REFRESH_TOKEN);
+            String refreshToken = httpContext.getValueFromCookie(AuthConstants.REFRESH_TOKEN);
 
-            httpContext.setCookie(SecurityConstants.ACCESS_TOKEN, accessToken);
-            httpContext.setCookie(SecurityConstants.REFRESH_TOKEN, refreshToken);
+            httpContext.setCookie(AuthConstants.ACCESS_TOKEN, accessToken);
+            httpContext.setCookie(AuthConstants.REFRESH_TOKEN, refreshToken);
         }
 
         filterChain.doFilter(request, response);
@@ -63,7 +62,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         if(memberAuthOrchestrator.isExpiredAccessToken(accessToken)) {
-            String refreshToken = httpContext.getValueFromCookie(SecurityConstants.REFRESH_TOKEN);
+            String refreshToken = httpContext.getValueFromCookie(AuthConstants.REFRESH_TOKEN);
             validatedToken = memberAuthOrchestrator.getRefreshAccessToken(refreshToken);
         }
 
@@ -71,13 +70,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     private boolean isAuthorizationHeader() {
-        String token = httpContext.getHeader(SecurityConstants.AUTHORIZATION_HEADER);
+        String token = httpContext.getHeader(AuthConstants.AUTHORIZATION_HEADER);
         if (token == null) {
             System.out.println("토큰이 없습니다.");
             return false;
         }
 
-        if(!token.startsWith(SecurityConstants.BEARER_PREFIX)) {
+        if(!token.startsWith(AuthConstants.BEARER_PREFIX)) {
             System.out.println("올바른 토큰이 아닙니다.");
             return false;
         }

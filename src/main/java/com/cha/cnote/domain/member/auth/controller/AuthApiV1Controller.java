@@ -1,12 +1,9 @@
 package com.cha.cnote.domain.member.auth.controller;
 
-import com.cha.cnote.HomeController;
 import com.cha.cnote.domain.member.ochestration.MemberAuthOrchestrator;
 import com.cha.cnote.global.ResData;
-import com.cha.cnote.global.reqResHandler.HttpContext;
-import com.cha.cnote.global.security.constant.SecurityConstants;
-import com.cha.cnote.global.security.filter.JwtAuthFilter;
-import jakarta.servlet.http.Cookie;
+import com.cha.cnote.global.httpContext.HttpContext;
+import com.cha.cnote.domain.member.auth.constant.AuthConstants;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,17 +34,17 @@ public class AuthApiV1Controller {
         String accessToken = memberAuthOrchestrator.getAccessToken(loginRequest.email);
         String refreshToken = memberAuthOrchestrator.getRefreshTokenByUser(loginRequest.email);
 
-        httpContext.setHeader(SecurityConstants.AUTHORIZATION_HEADER, SecurityConstants.BEARER_PREFIX + accessToken);
-        httpContext.setCookie(SecurityConstants.ACCESS_TOKEN, accessToken);
-        httpContext.setCookie(SecurityConstants.REFRESH_TOKEN, refreshToken);
+        httpContext.setHeader(AuthConstants.AUTHORIZATION_HEADER, AuthConstants.BEARER_PREFIX + accessToken);
+        httpContext.setCookie(AuthConstants.ACCESS_TOKEN, accessToken);
+        httpContext.setCookie(AuthConstants.REFRESH_TOKEN, refreshToken);
 
         return new ResData<>("2000001", "로그인 성공", loginRequest.email);
     }
 
     @PostMapping("/logout")
     public String logout(HttpServletResponse res) {
-        httpContext.removeCookie(SecurityConstants.ACCESS_TOKEN);
-        httpContext.removeCookie(SecurityConstants.REFRESH_TOKEN);
+        httpContext.removeCookie(AuthConstants.ACCESS_TOKEN);
+        httpContext.removeCookie(AuthConstants.REFRESH_TOKEN);
 
         return "{\"result\" : \"success\"}";
     }

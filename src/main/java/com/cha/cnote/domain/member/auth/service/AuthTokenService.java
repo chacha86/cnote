@@ -1,7 +1,7 @@
 package com.cha.cnote.domain.member.auth.service;
 
 import com.cha.cnote.domain.member.member.dto.MemberDto;
-import com.cha.cnote.domain.member.member.entity.Member;
+import com.cha.cnote.domain.member.auth.constant.AuthConstants;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -27,7 +27,7 @@ public class AuthTokenService {
 
     @Value("${jwt.access.secret-key}")
     private String accessKey;
-    private final static int ACCESS_EXP_TIME = 1000 * 60 * 10; // 10분
+
 
     public MemberDto getMemberByAccessToken(String accessToken) {
 
@@ -44,7 +44,7 @@ public class AuthTokenService {
                 .subject(memberDto.getEmail())
                 .claim(EMAIL, memberDto.getEmail())
                 .claim(NICKNAME, memberDto.getNickname())
-                .claim(EXP, new Date(System.currentTimeMillis() + ACCESS_EXP_TIME))
+                .claim(EXP, new Date(System.currentTimeMillis() + AuthConstants.ACCESS_EXP_TIME))
                 .signWith(getMyKey(accessKey))
                 .compact();
     }
