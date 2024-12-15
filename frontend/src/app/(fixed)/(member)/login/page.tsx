@@ -27,7 +27,7 @@ export default function Login() {
           router.push("/list");
       })
       .catch((error) => {
-        alert("로그인 실패");
+        console.error("Error:", error);
       });
   };
 

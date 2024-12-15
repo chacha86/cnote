@@ -2,7 +2,7 @@
 import { useTestContext } from "@/app/context/memberContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { memo, use } from "react";
+import { memo} from "react";
 
 function NavBar({ css }: { css: string }) {
   const router = useRouter();

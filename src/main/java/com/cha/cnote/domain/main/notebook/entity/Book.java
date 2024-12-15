@@ -17,6 +17,7 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false, length = 30)
+    @Builder.Default
     private String name = "no name..";
     @OneToMany(mappedBy = "parentBook", cascade = CascadeType.ALL)
     @Builder.Default

@@ -1,10 +1,14 @@
 spring:
-  profiles: prod
   datasource:
-    url: jdbc:mysql://localhost:3306/cnote?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/cnote?useSSL=true&serverTimezone=UTC
     username: root
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
+  config:
+    import: classpath:application-secret.yml
+#  jpa:
+#    properties:
+#      dialect: org.hibernate.dialect.H2Dialect
+jwt:
+  access:
+    secret-key: 219e55d41b11e4d9a33b04c3e941c5bc64640e86b13244435b8fe1ae275ed7ad6a03edd397a0c1452e50294eb0958295abaf35681e689b69e9bdb0294d94bc51

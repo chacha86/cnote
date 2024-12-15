@@ -1,8 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef, useCallback, use } from "react";
-import Editor, { OnMount } from "@monaco-editor/react";
-import * as monaco from "monaco-editor";
+import React, { useEffect, useState, useRef} from "react";
 import { Note } from "@/types/Book";
 import MarkDownViewer from "./MarkDownViewer";
 import NoteEditor from "./NoteEditor";
@@ -15,13 +13,11 @@ export default function DetailComponent({
   selectedNote: Note;
   changeNote: (note: Note) => void;
 }) {
-  if (!selectedNote) {
-    return <div>노트를 선택해주세요.</div>;
-  }
+
   const [title, setTitle] = useState(selectedNote.title);
   const [code, setCode] = useState(selectedNote.content);
   const [mode, setMode] = useState(0); // 0: editor, 1: viewer
-  const [cursor, setCursor] = useState({ lineNumber: 1, column: 1 });
+  const [cursor, setCursor] = useState<{lineNumber:number, column:number}>({ lineNumber: 1, column: 1 });
   const [isPublished, setIsPublished] = useState(selectedNote.published);
 
   const contentRef = useRef(selectedNote.content);
@@ -70,7 +66,8 @@ export default function DetailComponent({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [mode]);
+  }, []);
+
   const saveContent = (content: string) => {
     fetch(`http://localhost:8080/api/v1/notes/${selectedNoteRef.current.id}`, {
       method: "PUT",
@@ -105,7 +102,8 @@ export default function DetailComponent({
       });
   };
 
-  const changeContent = (content: string) => {
+  const changeContent = (content: string|undefined) => {
+    if(!content) return;
     if (contentRef.current == content) {
       return;
     }
@@ -113,9 +111,13 @@ export default function DetailComponent({
     contentRef.current = content;
   };
 
-  const changeCursor = (cursor: any) => {
+  const changeCursor = (cursor: {lineNumber:number, column:number}) => {
     cursorRef.current = cursor;
   };
+
+  if (!selectedNote) {
+    return <div>노트를 선택해주세요.</div>;
+  }
 
   return (
     <div className="p-2 w-[70%]">

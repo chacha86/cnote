@@ -1,5 +1,5 @@
 "use client";
-import { use, useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import Detail from "./book/note/Detail";
 import { Book, Note } from "@/types/Book";
 import BookList from "./book/BookList";

@@ -1,10 +1,10 @@
 import NoteMain from "@/components/main/NoteMain";
-import { Suspense, useContext } from "react";
+import { Suspense } from "react";
 import { serverFetchWrapper } from "@/components/api/ServerFetchWrapper";
 
 export default async function Note() {
   
-  const res = await serverFetchWrapper("http://localhost:8080/api/v1/books");
+  const res = await serverFetchWrapper("/api/v1/books");
   
   if(res === null || !res.ok) {
     return <div>로그인이 필요합니다</div>;

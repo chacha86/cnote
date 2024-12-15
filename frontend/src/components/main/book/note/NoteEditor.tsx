@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import * as monaco from "monaco-editor";
 import { Editor, OnMount } from "@monaco-editor/react";
 
@@ -9,14 +9,14 @@ function NoteEditor({
   changeCursor
 }: {
   content: string;
-  cursor: any;
-  changeContent: (content: any) => void;
-  changeCursor: (cursor: any) => void;
+  cursor: {lineNumber:number, column:number};
+  changeContent: (content: string | undefined) => void;
+  changeCursor: (cursor: {lineNumber:number, column:number}) => void;
 }) {
 
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
-  const handleEditorDidMount: OnMount = React.useCallback((editor, monaco) => {
+  const handleEditorDidMount: OnMount = React.useCallback((editor) => {
     editorRef.current = editor;
     editor.onDidChangeCursorPosition((e) => {
       changeCursor(e.position);

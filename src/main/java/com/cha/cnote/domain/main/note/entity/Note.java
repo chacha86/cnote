@@ -15,6 +15,7 @@ public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Builder.Default
     private String title = "no title..";
     @Column(columnDefinition = "TEXT")
     private String content;

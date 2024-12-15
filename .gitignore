@@ -43,3 +43,11 @@ out/
 ### DB ###
 /data/testdb.mv.db
 /data/testdb.mv.db.trace
+
+### Docker ###
+/docker-compose.yml
+/Dockerfile
+/frontend/Dockerfile
+
+### Secrets ###
+/src/main/resources/application-secret.yml

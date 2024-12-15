@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 
 export async function serverFetchWrapper(url: string) {
+  const serverUrl = "http://cnote-back:8080" + url;
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("accessToken");
   const refreshToken = cookieStore.get("refreshToken");
@@ -13,10 +14,9 @@ export async function serverFetchWrapper(url: string) {
   if (refreshToken === null || refreshToken === undefined) {
     console.log("refresh 토큰 없음");
     return null;
-    [];
   }
 
-  const res = await fetch(url, {
+  const res = await fetch(serverUrl, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

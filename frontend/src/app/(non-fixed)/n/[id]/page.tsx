@@ -1,16 +1,15 @@
-import { memo, Suspense } from "react";
+import { Suspense } from "react";
 import DetailClientComponent from "./ClientComponent";
 import { serverFetchWrapper } from "@/components/api/ServerFetchWrapper";
 
 export default async function NoteDetail({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  console.log('sssssssssssssss1');
   const { id } = await params;
   const res = await serverFetchWrapper(
-    `http://localhost:8080/api/v1/notes/${id}`
+    `/api/v1/notes/${id}`
   );
 
   if (res === null || !res.ok) {
@@ -20,8 +19,6 @@ export default async function NoteDetail({
   const result = await res.json();
   const title = await result.data.title;
   const content = await result.data.content;
-  
-  console.log('sssssssssssssss2');
 
   return (
     <div className="flex justify-center">

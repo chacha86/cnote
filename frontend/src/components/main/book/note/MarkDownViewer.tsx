@@ -1,5 +1,5 @@
 'use client';
-import { useContext, useRef } from "react";
+import {useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -7,7 +7,6 @@ import remarkBreaks from "remark-breaks";
 import rehypeSanitize from "rehype-sanitize";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
-  oneDark,
   oneLight,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
 
@@ -27,7 +26,7 @@ export default function MarkDownViewer({content}: {content: string}) {
               </a>
             );
           },
-          img: ({ node, ...props }) => {
+          img: ({...props }) => {
             if (props.src) {
               return (
                 <img
@@ -38,17 +37,18 @@ export default function MarkDownViewer({content}: {content: string}) {
             }
           },
           code(props) {
-            const { children, className, node, ...rest } = props;
+            const { children, className, ...rest } = props;
             const match = /language-(\w+)/.exec(className || "");
             return match ? (
               <SyntaxHighlighter
                 {...rest}
                 PreTag="div"
-                children={String(children).replace(/\n$/, "")}
                 language={match[1]}
                 style={oneLight}
                 ref={highlighterRef}
-              />
+              >
+              {String(children).replace(/\n$/, "")}
+              </SyntaxHighlighter>
             ) : (
               <code
                 {...rest}
